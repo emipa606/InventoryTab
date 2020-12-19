@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!--Header Labels-->
+  <!--[Core] <Options>オプション</Options>-->
+  <IT_Search>強制検索</IT_Search>
+  <IT_TotalFound>アイテムの検索結果</IT_TotalFound>
+  <!--Settings Labels-->
+  <IT_InventoryOptions>在庫オプション</IT_InventoryOptions>
+  <IT_SearchMap>マップ全体を検索</IT_SearchMap>
+  <IT_SearchMapToolTip>このマップ全体からアイテムを検索します。</IT_SearchMapToolTip>
+  <IT_SearchPawns>人物を検索</IT_SearchPawns>
+  <IT_SearchPawnsToolTip>人物の一覧から検索します。結果には入植者や囚人、死者を含みます。</IT_SearchPawnsToolTip>
+  <IT_AutoUpdate>自動更新</IT_AutoUpdate>
+  <IT_AutoUpdateToolTip>「自動更新間隔」を利用して、アイテムリストの表示を、設定した時間ごとに更新します。</IT_AutoUpdateToolTip>
+  <IT_AutoUpdateTimeInterval>自動更新間隔</IT_AutoUpdateTimeInterval>
+  <!--Tab Labels-->
+  <IT_TabAll>全て</IT_TabAll>
+  <IT_TabFoods>食糧</IT_TabFoods>
+  <IT_TabManufactured>生産品</IT_TabManufactured>
+  <IT_TabRawResources>未加工の資源</IT_TabRawResources>
+  <IT_TabItems>アイテム</IT_TabItems>
+  <IT_TabWeapons>武器</IT_TabWeapons>
+  <IT_TabApparel>衣服</IT_TabApparel>
+  <IT_TabBuildings>建築物</IT_TabBuildings>
+  <IT_TabChunks>岩塊/鉄屑</IT_TabChunks>
+  <IT_TabCorpses>死体</IT_TabCorpses>
+</LanguageData>

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Inventory.label>Inventar</Inventory.label>
+  <Inventory.description>Zeigt alle Gegenstände des Lagerbestandes der Kolonie an.</Inventory.description>
+</LanguageData>

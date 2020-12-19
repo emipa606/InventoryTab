@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MainButtonDef>
+    <defName>Inventory</defName>
+    <label>inventory</label>
+    <description>Shows all items in the colonys stockpile.</description>
+    <tabWindowClass>InventoryTab.MainTabWindow_Inventory</tabWindowClass>
+    <order>100</order>
+    <iconPath>UI/search_ui</iconPath>
+    <minimized>True</minimized>
+  </MainButtonDef>
+</Defs>

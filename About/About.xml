@@ -1,11 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-  <name>InventoryTab</name>
+  <name>InventoryTab (Continued)</name>
+  <packageId>Mlie.InventoryTab</packageId>
   <author>SirKota</author>
-  <url>https://github.com/SirKota/InventoryTab</url>
+  <url>https://github.com/emipa606/InventoryTab</url>
   <supportedVersions>
-	<li>1.0</li>
-	<li>1.1</li>
+    <li>1.0</li>
+    <li>1.1</li>
+    <li>1.2</li>
   </supportedVersions>
-  <description>Adds a new tab to view all of the colonies stockpiles at once! With options to see all visible items on the map and the inventories of colonist, prisoners and the dead!</description>
+  <modDependencies />
+  <loadAfter />
+  <description>[img]https://i.imgur.com/WAEzk68.png[/img]
+Update of SirKotas mod
+https://steamcommunity.com/sharedfiles/filedetails/?id=1509278793
+
+- Added the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2107444087]German translation by Amalek[/url]
+- Renamed all translation-strings to not overwrite vanilla strings
+
+[img]https://i.imgur.com/7Gzt3Rg.png[/img]
+
+[table]
+    [tr]
+        [td][url=https://invite.gg/Mlie][img]https://i.imgur.com/zdzzBrc.png[/img][/url][/td]
+        [td][url=https://github.com/emipa606/InventoryTab][img]https://i.imgur.com/kTkpTOE.png[/img][/url][/td]
+    [/tr]
+[/table]
+	
+[img]https://i.imgur.com/NOW7jU1.png[/img]
+Ever asked yourself, 
+"where did I put that orbital bombardment?"
+"How many chunks are left on the map?" 
+"I wonder how many shirts the colony has left?"
+"Who took the masterwork Thrumbo pants?"
+
+With the Inventory tab mod, you will never misplace, miss or lose an item ever again!
+
+Features:
+	View every item in the stockpiles!
+	Options to search the whole map, colonist, animal, prisoners and even the dead!
+	Has a handy search bar!
+        Japanese Translation (Thanks to Proxyer)
+        German Translation (Thanks to Amalek): https://steamcommunity.com/sharedfiles/filedetails/?id=2107444087
+
+Version 2.0: Now with saving options! (and minor bug fixes)
+
+Version 1.5 : Now with options menu!
+
+Gihub: https://github.com/SirKota/InventoryTab
+
+Disclamier: 1.0 version of this mod is broken but usable I'm trying to see if I can fix it in the coming days but no guarantees.
+
+WARNING! The mod has a slight impact on fps when the tab is opened and you have a high number of items, it gets worse the farther you zoom out and speed up time.</description>
 </ModMetaData>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Hearder Labels-->
+  <Options>Optionen</Options>
+  <Search>Suche erzwingen</Search>
+  <TotalFound>Gefundene Elemente insgesamt</TotalFound>
+  <!--Settings Labels-->
+  <InventoryOptions>Inventar Optionen</InventoryOptions>
+  <SearchMap>Suche auf ganzer Karte</SearchMap>
+  <SearchMapToolTip>Suche auf ganze Karte nach Gegenständen</SearchMapToolTip>
+  <SearchPawns>Suche Siedler</SearchPawns>
+  <SearchPawnsToolTip>Durchsuche das Inventar der Siedler. Einschließlich Kolonist, Gefangene, Karawanentiere und Tote.</SearchPawnsToolTip>
+  <AutoUpdate>Auto Update</AutoUpdate>
+  <AutoUpdateToolTip>Verwendet 'Auto Update Timer', um die Liste der Gegenstände eines Timers zu aktualisieren.</AutoUpdateToolTip>
+  <AutoUpdateTimeInterval>Auto Update Timer</AutoUpdateTimeInterval>
+  <!--Tab Labels-->
+  <TabAll>Alles</TabAll>
+  <TabFoods>Nahrung</TabFoods>
+  <TabManufactured>Hergestellt</TabManufactured>
+  <TabRawResources>Rohmaterial</TabRawResources>
+  <TabItems>Gegenstände</TabItems>
+  <TabWeapons>Waffen</TabWeapons>
+  <TabApparel>Kleidung</TabApparel>
+  <TabBuildings>Gebäude</TabBuildings>
+  <TabChunks>Brocken</TabChunks>
+  <TabCorpses>Leichen</TabCorpses>
+</LanguageData>

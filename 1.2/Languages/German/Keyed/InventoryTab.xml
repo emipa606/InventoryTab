@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Hearder Labels-->
+  <IT_Options>Optionen</IT_Options>
+  <IT_Search>Suche erzwingen</IT_Search>
+  <IT_TotalFound>Gefundene Elemente insgesamt</IT_TotalFound>
+  <!--Settings Labels-->
+  <IT_InventoryOptions>Inventar Optionen</IT_InventoryOptions>
+  <IT_SearchMap>Suche auf ganzer Karte</IT_SearchMap>
+  <IT_SearchMapToolTip>Suche auf ganze Karte nach Gegenständen</IT_SearchMapToolTip>
+  <IT_SearchPawns>Suche Siedler</IT_SearchPawns>
+  <IT_SearchPawnsToolTip>Durchsuche das Inventar der Siedler. Einschließlich Kolonist, Gefangene, Karawanentiere und Tote.</IT_SearchPawnsToolTip>
+  <IT_AutoUpdate>Auto Update</IT_AutoUpdate>
+  <IT_AutoUpdateToolTip>Verwendet 'Auto Update Timer', um die Liste der Gegenstände eines Timers zu aktualisieren.</IT_AutoUpdateToolTip>
+  <IT_AutoUpdateTimeInterval>Auto Update Timer</IT_AutoUpdateTimeInterval>
+  <!--Tab Labels-->
+  <IT_TabAll>Alles</IT_TabAll>
+  <IT_TabFoods>Nahrung</IT_TabFoods>
+  <IT_TabManufactured>Hergestellt</IT_TabManufactured>
+  <IT_TabRawResources>Rohmaterial</IT_TabRawResources>
+  <IT_TabItems>Gegenstände</IT_TabItems>
+  <IT_TabWeapons>Waffen</IT_TabWeapons>
+  <IT_TabApparel>Kleidung</IT_TabApparel>
+  <IT_TabBuildings>Gebäude</IT_TabBuildings>
+  <IT_TabChunks>Brocken</IT_TabChunks>
+  <IT_TabCorpses>Leichen</IT_TabCorpses>
+</LanguageData>
