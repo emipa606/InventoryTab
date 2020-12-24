@@ -34,6 +34,29 @@ namespace InventoryTab
         // 0 means they are equal
         public int CompareTo(Slot other)
         {
+            var firstThingLabel = ThingInSlot.LabelNoCount;
+            if (ThingInSlot.TryGetQuality(out _))
+            {
+                firstThingLabel = RemoveQualityInLabel(firstThingLabel);
+            }
+            var otherThingLabel = other.ThingInSlot.LabelNoCount;
+            if (ThingInSlot.TryGetQuality(out _))
+            {
+                otherThingLabel = RemoveQualityInLabel(other.ThingInSlot.LabelNoCount);
+            }
+            var nameCompared = string.Compare(firstThingLabel, otherThingLabel, StringComparison.CurrentCulture);
+            if (ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true && other.ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true)
+            {
+                if (ThingInSlot is Corpse a && other.ThingInSlot is Corpse b && a.InnerPawn.def.race.Humanlike == true && b.InnerPawn.def.race.Humanlike == true)
+                {
+                    nameCompared = string.Compare(a.InnerPawn.Label, b.InnerPawn.Label, StringComparison.CurrentCulture);
+                }
+            }
+            if (nameCompared != 0)
+            {
+                return nameCompared;
+            }
+
             if (ThingInSlot.MarketValue > other.ThingInSlot.MarketValue)
             {
                 return 1;
@@ -42,23 +65,12 @@ namespace InventoryTab
             {
                 return -1;
             }
+            return 0;
+        }
 
-            //If things have the same market value sort based on name
-            if (ThingInSlot.MarketValue != other.ThingInSlot.MarketValue)
-            {
-                return 0;
-            }
-            //More corpse bullshit
-            if (ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true && other.ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true)
-            {
-                if (ThingInSlot is Corpse a && other.ThingInSlot is Corpse b && a.InnerPawn.def.race.Humanlike == true && b.InnerPawn.def.race.Humanlike == true)
-                {
-                    return string.Compare(a.InnerPawn.Label, b.InnerPawn.Label, StringComparison.CurrentCulture);
-                }
-
-            }
-
-            return string.Compare(ThingInSlot.LabelNoCount, other.ThingInSlot.LabelNoCount, StringComparison.CurrentCulture);
+        private string RemoveQualityInLabel(string thingLabel)
+        { 
+            return thingLabel.Split('(')[0].Trim();
         }
     }
 }

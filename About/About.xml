@@ -17,6 +17,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1509278793
 
 - Added the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2107444087]German translation by Amalek[/url]
 - Renamed all translation-strings to not overwrite vanilla strings
+- Should now sort by name first, then market value
 
 [img]https://i.imgur.com/7Gzt3Rg.png[/img]
 
@@ -46,8 +47,6 @@ Features:
 Version 2.0: Now with saving options! (and minor bug fixes)
 
 Version 1.5 : Now with options menu!
-
-Gihub: https://github.com/SirKota/InventoryTab
 
 Disclamier: 1.0 version of this mod is broken but usable I'm trying to see if I can fix it in the coming days but no guarantees.
 
