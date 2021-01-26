@@ -3,13 +3,15 @@
   <!-- Hearder Labels-->
   <IT_Options>Options</IT_Options>
   <IT_Search>Force Search</IT_Search>
-  <IT_TotalFound>Total found items</IT_TotalFound>
+  <IT_TotalFound>Found items</IT_TotalFound>
   <!--Settings Labels-->
   <IT_InventoryOptions>Inventory Options</IT_InventoryOptions>
   <IT_SearchMap>Search whole map</IT_SearchMap>
   <IT_SearchMapToolTip>Search the whole map for items.</IT_SearchMapToolTip>
   <IT_SearchPawns>Search pawns</IT_SearchPawns>
   <IT_SearchPawnsToolTip>Search the pawns inventories. Includes colonist, prisoners, caravan animals and the dead.</IT_SearchPawnsToolTip>
+  <IT_LimitToCurrentStorage>Search selected</IT_LimitToCurrentStorage>
+  <IT_LimitToCurrentStorageToolTip>If any kind of storage-buildning is selected it will only show items in that storage.</IT_LimitToCurrentStorageToolTip>
   <IT_AutoUpdate>Auto Update</IT_AutoUpdate>
   <IT_AutoUpdateToolTip>Uses 'Auto Update Timer' to update the list of items of a timer.</IT_AutoUpdateToolTip>
   <IT_AutoUpdateTimeInterval>Auto Update Timer</IT_AutoUpdateTimeInterval>

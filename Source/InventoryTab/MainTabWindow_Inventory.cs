@@ -4,6 +4,8 @@ using UnityEngine;
 using RimWorld;
 using Verse;
 using InventoryTab.Helpers;
+using System;
+using System.Linq;
 
 namespace InventoryTab
 {
@@ -42,6 +44,9 @@ namespace InventoryTab
 
         private List<Thing> _things;
         private List<Slot> _slots;
+        private List<Slot> _total;
+        private List<Slot> _found;
+        private Dictionary<string, int> _qualityCount;
 
         private float _timer;
 
@@ -94,8 +99,23 @@ namespace InventoryTab
                 UpdateThings();
             }
 
+            _found = new List<Slot>();
+            _qualityCount = new Dictionary<string, int>();
+            if (!string.IsNullOrEmpty(_searchFor))
+            {
+                _found = GetSearchForList(_total);
+                UpdateQualityDictionary(_found);
+                if (_found.Count == 0)
+                {
+                    _total = _found;
+                }
+            }
+            else
+            {
+                UpdateQualityDictionary(_total);
+            }
             //Draw the header; options, search and how many items were found
-            DrawHeader(inRect, _things.Count);
+            DrawHeader(inRect, _total.Count, _found.Count);
             //Draws the tabs
             DrawTabs(inRect);
             //Draw all the items based on tabs and options
@@ -122,6 +142,26 @@ namespace InventoryTab
             _things = ItemFinderHelper.GetAllMapItems(Find.CurrentMap, _options);
             _slots = SortSlotsWithCategory(CombineThings(_things.ToArray()), _currentTab);
             _dirty = false;
+            _total = SortSlotsWithCategory(MakeSlotsFromThings(_things), _currentTab);
+        }
+
+        public void UpdateQualityDictionary(List<Slot> slots)
+        {
+            foreach (var slot in slots)
+            {
+                if (!slot.ThingInSlot.TryGetQuality(out var quality))
+                {
+                    continue;
+                }
+                if (_qualityCount.ContainsKey(quality.GetLabel()))
+                {
+                    _qualityCount[quality.GetLabel()]++;
+                }
+                else
+                {
+                    _qualityCount[quality.GetLabel()] = 1;
+                }
+            }
         }
 
         public void Dirty()
@@ -129,15 +169,41 @@ namespace InventoryTab
             _dirty = true;
         }
 
-        private void DrawHeader(Rect inRect, int itemCount)
+        private void DrawHeader(Rect inRect, int itemCount, int filtered = 0)
         {
-            //Draw a label for all the items found
-            var label = new Rect(0, 0, 256, 128);
-            Text.Font = GameFont.Small;
-            Widgets.Label(label, "IT_TotalFound".Translate() + ": " + itemCount);
             //Draw the search bar
-            var searchOptions = new Rect(0, 25, 200, 25);
+            var searchOptions = new Rect(0, 0, 200, 30);
             _searchFor = Widgets.TextArea(searchOptions, _searchFor);
+
+            //Draw a label for all the items found
+            var label = new Rect(210, 5, 256, 128);
+            Text.Font = GameFont.Small;
+            if (filtered > 0 && !string.IsNullOrEmpty(_searchFor))
+            {
+                Widgets.Label(label, $"{"IT_TotalFound".Translate()}: {filtered}/{itemCount}");
+            }
+            else
+            {
+                Widgets.Label(label, $"{"IT_TotalFound".Translate()}: {itemCount}");
+            }
+            if (_qualityCount.Count > 0)
+            {
+                var qualityLabel = new Rect(0, 30, 466, 30);
+                var qualityString = string.Empty;
+                foreach (var qualityType in Enum.GetValues(typeof(QualityCategory)).Cast<QualityCategory>())
+                {
+                    if (!_qualityCount.ContainsKey(qualityType.GetLabel()))
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(qualityString))
+                    {
+                        qualityString += " ";
+                    }
+                    qualityString += $"{GenText.CapitalizeFirst(qualityType.GetLabelShort())}: {_qualityCount[qualityType.GetLabel()]}";
+                }
+                Widgets.Label(qualityLabel, qualityString);
+            }
 
             var optionsRect = new Rect(inRect.width - 25, 0, 25, 25);
             TooltipHandler.TipRegion(optionsRect, new TipSignal("IT_Options".Translate()));
@@ -357,6 +423,16 @@ namespace InventoryTab
             return false;
         }
 
+        private List<Slot> MakeSlotsFromThings(List<Thing> things)
+        {
+            var result = new List<Slot>();
+            foreach (var thing in things)
+            {
+                result.Add(new Slot(thing, AssignTab(thing)));
+            }
+            return result;
+        }
+
         //Combines all the things into easier to manage slots
         private List<Slot> CombineThings(Thing[] things)
         {
@@ -435,14 +511,27 @@ namespace InventoryTab
         private List<Slot> GetSearchForList(List<Slot> slots)
         {
 
-            if (string.IsNullOrEmpty(_searchFor) == true) { return slots; }
+            if (string.IsNullOrEmpty(_searchFor))
+            {
+                return slots;
+            }
 
             var res = new List<Slot>();
 
+            var escapedSearchText = _searchFor;
+            if(escapedSearchText.Trim().Contains(" "))
+            {
+                escapedSearchText = escapedSearchText.Trim();
+            }
+            escapedSearchText = Regex.Escape(escapedSearchText);
+            if(escapedSearchText.Contains(@"\ "))
+            {
+                escapedSearchText = escapedSearchText.Replace(escapedSearchText.Trim(), escapedSearchText.Trim().Replace(@"\ ", ".*"));
+            }
             for (var i = 0; i < slots.Count; i++)
             {
                 var searchText = slots[i].ThingInSlot.Label + " " + slots[i].ThingInSlot.LabelNoCount;
-                if (Regex.IsMatch(searchText, _searchFor, RegexOptions.IgnoreCase) == true)
+                if (Regex.IsMatch(searchText, escapedSearchText, RegexOptions.IgnoreCase))
                 {
                     res.Add(slots[i]);
                 }

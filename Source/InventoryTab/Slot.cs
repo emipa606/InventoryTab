@@ -35,14 +35,14 @@ namespace InventoryTab
         public int CompareTo(Slot other)
         {
             var firstThingLabel = ThingInSlot.LabelNoCount;
-            if (ThingInSlot.TryGetQuality(out _))
+            if (ThingInSlot.TryGetQuality(out var firstQuality))
             {
-                firstThingLabel = RemoveQualityInLabel(firstThingLabel);
+                firstThingLabel = RemoveQualityInLabel(firstThingLabel, firstQuality);
             }
             var otherThingLabel = other.ThingInSlot.LabelNoCount;
-            if (ThingInSlot.TryGetQuality(out _))
+            if (ThingInSlot.TryGetQuality(out var secondQuality))
             {
-                otherThingLabel = RemoveQualityInLabel(other.ThingInSlot.LabelNoCount);
+                otherThingLabel = RemoveQualityInLabel(other.ThingInSlot.LabelNoCount, secondQuality);
             }
             var nameCompared = string.Compare(firstThingLabel, otherThingLabel, StringComparison.CurrentCulture);
             if (ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true && other.ThingInSlot.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == true)
@@ -68,9 +68,14 @@ namespace InventoryTab
             return 0;
         }
 
-        private string RemoveQualityInLabel(string thingLabel)
-        { 
-            return thingLabel.Split('(')[0].Trim();
+        private string RemoveQualityInLabel(string thingLabel, QualityCategory quality)
+        {
+            var qualityIndex = thingLabel.IndexOf($"({quality.GetLabel()}");
+            if (qualityIndex > 0)
+            {
+                return thingLabel.Substring(0, qualityIndex).Trim();
+            }
+            return thingLabel;
         }
     }
 }

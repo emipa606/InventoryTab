@@ -1,23 +1,52 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
 namespace InventoryTab.Helpers
 {
-    public class ItemFinderHelper {
+    public class ItemFinderHelper
+    {
 
         //This is how we get all the items on the map
         public static List<Thing> GetAllMapItems(Map map, OptionsHelper options)
         {
             var results = new List<Thing>();
             List<Thing> allThings = map.listerThings.AllThings;
+            var allSelectedStorages = new List<Building>();
+            if (options.LimitToStorage)
+            {
+                foreach (var building in Find.Selector.SelectedObjectsListForReading.OfType<Building>())
+                {
+                    if (building.GetInspectTabs().OfType<ITab_Storage>() != null)
+                    {
+                        allSelectedStorages.Add(building);
+                    }
+                }
+            }
+            var checkInStorage = options.LimitToStorage && allSelectedStorages.Count > 0;
 
             for (var i = 0; i < allThings.Count; i++)
             {
                 Thing thing = allThings[i];
 
                 //If the thing is a item and is not in the fog then continue to the next
-                if (thing.def.category != ThingCategory.Item || thing.Position.Fogged(thing.Map) == true) { continue; }
+                if (thing.def.category != ThingCategory.Item || thing.Position.Fogged(thing.Map) == true)
+                {
+                    continue;
+                }
+
+                if (checkInStorage)
+                {
+                    foreach (var building in allSelectedStorages)
+                    {
+                        if(thing.OccupiedRect().Intersect(building.OccupiedRect()).Count() > 0)
+                        {
+                            results.Add(thing);
+                        }
+                    }
+                    continue;
+                }
 
                 if (options.SearchWholeMap == false)
                 {
@@ -89,8 +118,10 @@ namespace InventoryTab.Helpers
             return results;
         }
 
-        private static void CorpseApparelHandler(Thing thing, ref List<Thing> things, bool searchPawns) {
-            if (searchPawns == false || thing.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == false){
+        private static void CorpseApparelHandler(Thing thing, ref List<Thing> things, bool searchPawns)
+        {
+            if (searchPawns == false || thing.def.IsWithinCategory(ThingCategoryDefOf.Corpses) == false)
+            {
                 return;
             }
 
@@ -102,9 +133,10 @@ namespace InventoryTab.Helpers
 
             //Add pawns apparel to list
             ThingOwner pawnApparel = corpse.InnerPawn.apparel.GetDirectlyHeldThings();
-            for (var i = 0; i < pawnApparel.Count; i++){
+            for (var i = 0; i < pawnApparel.Count; i++)
+            {
                 things.Add(pawnApparel[i]);
-            }    
+            }
 
         }
 
