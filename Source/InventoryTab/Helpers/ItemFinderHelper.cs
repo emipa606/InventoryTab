@@ -7,12 +7,11 @@ namespace InventoryTab.Helpers
 {
     public class ItemFinderHelper
     {
-
         //This is how we get all the items on the map
         public static List<Thing> GetAllMapItems(Map map, OptionsHelper options)
         {
             var results = new List<Thing>();
-            List<Thing> allThings = map.listerThings.AllThings;
+            var allThings = map.listerThings.AllThings;
             var allSelectedStorages = new List<Building>();
             if (options.LimitToStorage)
             {
@@ -24,14 +23,13 @@ namespace InventoryTab.Helpers
                     }
                 }
             }
+
             var checkInStorage = options.LimitToStorage && allSelectedStorages.Count > 0;
 
-            for (var i = 0; i < allThings.Count; i++)
+            foreach (var thing in allThings)
             {
-                Thing thing = allThings[i];
-
                 //If the thing is a item and is not in the fog then continue to the next
-                if (thing.def.category != ThingCategory.Item || thing.Position.Fogged(thing.Map) == true)
+                if (thing.def.category != ThingCategory.Item || thing.Position.Fogged(thing.Map))
                 {
                     continue;
                 }
@@ -40,23 +38,27 @@ namespace InventoryTab.Helpers
                 {
                     foreach (var building in allSelectedStorages)
                     {
-                        if(thing.OccupiedRect().Intersect(building.OccupiedRect()).Count() > 0)
+                        if (thing.OccupiedRect().Intersect(building.OccupiedRect()).Any())
                         {
                             results.Add(thing);
                         }
                     }
+
                     continue;
                 }
 
                 if (options.SearchWholeMap == false)
                 {
                     //If it's not in a storage continue to the next
-                    if (thing.IsInAnyStorage() == false) { continue; }
+                    if (thing.IsInAnyStorage() == false)
+                    {
+                        continue;
+                    }
+
                     //Check for apparel and if it has some add it to the list
                     CorpseApparelHandler(thing, ref results, options.SearchPawns);
                     //add the thing to the list
                     results.Add(thing);
-
                 }
                 else
                 {
@@ -65,7 +67,6 @@ namespace InventoryTab.Helpers
                     //add the thing to the list
                     results.Add(thing);
                 }
-
             }
 
             //Handled all the searching all the pawns inventorys
@@ -73,45 +74,49 @@ namespace InventoryTab.Helpers
             {
                 return results;
             }
+
             //Get all the pawn. AllPawnsSpawned is the only list i could find that didn't
             //return null
-            var pawns = Find.CurrentMap.mapPawns.AllPawnsSpawned as List<Pawn>;
-            for (var i = 0; i < pawns.Count; i++)
+            var pawns = Find.CurrentMap.mapPawns.AllPawnsSpawned;
+            foreach (var pawn in pawns)
             {
                 //Check if pawn is not null and if not an animal and is apart of the colony as a colonist or a prisoner
-                if (pawns[i] != null
-                    && (pawns[i].def.race.Animal == true || pawns[i].IsColonist || pawns[i].IsPrisonerOfColony) == true)
+                if (pawn == null || !pawn.def.race.Animal && !pawn.IsColonist && !pawn.IsPrisonerOfColony)
                 {
+                    continue;
+                }
 
-                    ThingOwner things;
-                    //Add all the thing from the pawns inventory
-                    if (pawns[i].inventory != null)
+                ThingOwner things;
+                //Add all the thing from the pawns inventory
+                if (pawn.inventory != null)
+                {
+                    things = pawn.inventory.GetDirectlyHeldThings();
+                    foreach (var thing in things)
                     {
-                        things = pawns[i].inventory.GetDirectlyHeldThings();
-                        for (var j = 0; j < things.Count; j++)
-                        {
-                            results.Add(things[j]);
-                        }
+                        results.Add(thing);
                     }
+                }
 
-                    //Add all the thing the pawn has equiped
-                    if (pawns[i].equipment != null)
+                //Add all the thing the pawn has equiped
+                if (pawn.equipment != null)
+                {
+                    things = pawn.equipment.GetDirectlyHeldThings();
+                    foreach (var thing in things)
                     {
-                        things = pawns[i].equipment.GetDirectlyHeldThings();
-                        for (var j = 0; j < things.Count; j++)
-                        {
-                            results.Add(things[j]);
-                        }
+                        results.Add(thing);
                     }
-                    //Add all the thing the pawn is wearing Apperal
-                    if (pawns[i].apparel != null)
-                    {
-                        things = pawns[i].apparel.GetDirectlyHeldThings();
-                        for (var j = 0; j < things.Count; j++)
-                        {
-                            results.Add(things[j]);
-                        }
-                    }
+                }
+
+                //Add all the thing the pawn is wearing Apperal
+                if (pawn.apparel == null)
+                {
+                    continue;
+                }
+
+                things = pawn.apparel.GetDirectlyHeldThings();
+                foreach (var thing in things)
+                {
+                    results.Add(thing);
                 }
             }
 
@@ -126,19 +131,17 @@ namespace InventoryTab.Helpers
             }
 
             //if thing is not a corpse or an animal or an mechanoid then it dosen't wear apparel so skip it
-            if (!(thing is Corpse corpse) || corpse.InnerPawn.def.race.Animal == true || corpse.InnerPawn.def.race.IsMechanoid == true)
+            if (!(thing is Corpse corpse) || corpse.InnerPawn.def.race.Animal || corpse.InnerPawn.def.race.IsMechanoid)
             {
                 return;
             }
 
             //Add pawns apparel to list
-            ThingOwner pawnApparel = corpse.InnerPawn.apparel.GetDirectlyHeldThings();
-            for (var i = 0; i < pawnApparel.Count; i++)
+            var pawnApparel = corpse.InnerPawn.apparel.GetDirectlyHeldThings();
+            foreach (var item in pawnApparel)
             {
-                things.Add(pawnApparel[i]);
+                things.Add(item);
             }
-
         }
-
     }
 }

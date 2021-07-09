@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>InventoryTab (Continued)</name>
   <packageId>Mlie.InventoryTab</packageId>
@@ -8,6 +8,7 @@
     <li>1.0</li>
     <li>1.1</li>
     <li>1.2</li>
+    <li>1.3</li>
   </supportedVersions>
   <modDependencies />
   <loadAfter />
@@ -19,6 +20,10 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1509278793
 - Renamed all translation-strings to not overwrite vanilla strings
 - Sorted the lists by name and market-value
 - Russian translation added, thanks macropod!
+- Added quality-info below the search-box
+- Changed the search to use wildcard and not break when using non escaped characters
+- The totals should now show the correct values depending on the tab selected and search-results
+- Added the possibility to search in storage-containers if any is selected
 
 [img]https://i.imgur.com/7Gzt3Rg.png[/img]
 
@@ -31,10 +36,10 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1509278793
 	
 [img]https://i.imgur.com/NOW7jU1.png[/img]
 Ever asked yourself, 
-"where did I put that orbital bombardment?"
-"How many chunks are left on the map?" 
-"I wonder how many shirts the colony has left?"
-"Who took the masterwork Thrumbo pants?"
+&quot;where did I put that orbital bombardment?&quot;
+&quot;How many chunks are left on the map?&quot; 
+&quot;I wonder how many shirts the colony has left?&quot;
+&quot;Who took the masterwork Thrumbo pants?&quot;
 
 With the Inventory tab mod, you will never misplace, miss or lose an item ever again!
 
@@ -49,7 +54,7 @@ Version 2.0: Now with saving options! (and minor bug fixes)
 
 Version 1.5 : Now with options menu!
 
-Disclamier: 1.0 version of this mod is broken but usable I'm trying to see if I can fix it in the coming days but no guarantees.
+Disclamier: 1.0 version of this mod is broken but usable I&apos;m trying to see if I can fix it in the coming days but no guarantees.
 
 WARNING! The mod has a slight impact on fps when the tab is opened and you have a high number of items, it gets worse the farther you zoom out and speed up time.
 
@@ -62,6 +67,6 @@ WARNING! The mod has a slight impact on fps when the tab is opened and you have 
 [*] Do not report errors by making a discussion-thread, I get no notification of that.
 [*] If you have the solution for a problem, please post it to the GitHub repository.
 [/list]
+
 </description>
 </ModMetaData>
-

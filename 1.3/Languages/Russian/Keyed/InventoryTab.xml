@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Hearder Labels-->
+  <IT_Options>Настройки</IT_Options>
+  <IT_Search>Принудительный поиск</IT_Search>
+  <IT_TotalFound>Всего найдено предметов</IT_TotalFound>
+  <!--Settings Labels-->
+  <IT_InventoryOptions>Настройки инвентаря</IT_InventoryOptions>
+  <IT_SearchMap>По всей карте</IT_SearchMap>
+  <IT_SearchMapToolTip>Искать предметы по всей карте.</IT_SearchMapToolTip>
+  <IT_SearchPawns>Обыск пешек</IT_SearchPawns>
+  <IT_SearchPawnsToolTip>Обыщите инвентарь пешек. Включает колонистов, заключенных, караванных животных и мертвецов.</IT_SearchPawnsToolTip>
+  <IT_AutoUpdate>Автообновление</IT_AutoUpdate>
+  <IT_AutoUpdateToolTip>Использует «Таймер автообновления» для обновления списка, согласно установкам таймера</IT_AutoUpdateToolTip>
+  <IT_AutoUpdateTimeInterval>Таймер автообновления</IT_AutoUpdateTimeInterval>
+  <!--Tab Labels-->
+  <IT_TabAll>ВСЁ</IT_TabAll>
+  <IT_TabFoods>Еда</IT_TabFoods>
+  <IT_TabManufactured>Изделия</IT_TabManufactured>
+  <IT_TabRawResources>Сырьё</IT_TabRawResources>
+  <IT_TabItems>Штуковины</IT_TabItems>
+  <IT_TabWeapons>Оружие</IT_TabWeapons>
+  <IT_TabApparel>Одежда</IT_TabApparel>
+  <IT_TabBuildings>Конструкции</IT_TabBuildings>
+  <IT_TabChunks>Обломки</IT_TabChunks>
+  <IT_TabCorpses>Трупы</IT_TabCorpses>
+</LanguageData>

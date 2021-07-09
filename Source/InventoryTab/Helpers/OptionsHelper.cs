@@ -1,11 +1,25 @@
-﻿
-using UnityEngine;
-
+﻿using UnityEngine;
 using Verse;
 
 namespace InventoryTab.Helpers
 {
-    public class OptionsHelper {
+    public class OptionsHelper
+    {
+        private const float _optionsHeight = 32;
+        private const float _indexJumper = 30;
+        private readonly MainTabWindow_Inventory _window;
+        private bool _autoUpdate = true;
+
+        private bool _limitToStorage;
+
+        //Options, all hard coded because thats going to be the simplest
+        private bool _searchMap;
+        private bool _searchPawns;
+
+        public OptionsHelper(MainTabWindow_Inventory window)
+        {
+            _window = window;
+        }
 
         public bool SearchWholeMap => _searchMap;
         public bool SearchPawns => _searchPawns;
@@ -15,20 +29,8 @@ namespace InventoryTab.Helpers
         public bool AutoUpdate => _autoUpdate;
         public float AutoUpdateTimeInterval { get; private set; } = 5;
 
-        private const float _optionsHeight = 32;
-        private const float _indexJumper = 30;
-        //Options, all hard coded because thats going to be the simplest
-        private bool _searchMap = false;
-        private bool _searchPawns = false;
-        private bool _limitToStorage = false;
-        private bool _autoUpdate = true;
-        private readonly MainTabWindow_Inventory _window;
-
-        public OptionsHelper(MainTabWindow_Inventory window) {
-            _window = window;
-        }
-
-        public void DrawOptions(Rect inRect) {
+        public void DrawOptions(Rect inRect)
+        {
             var index = 1;
             float optionsX = 200;
 
@@ -71,14 +73,15 @@ namespace InventoryTab.Helpers
             index++;
 
             var rectTimeInterval = new Rect(0, index * _indexJumper, 256, _optionsHeight);
-            Widgets.Label(rectTimeInterval, string.Format("IT_AutoUpdateTimeInterval".Translate() + ": {0}", AutoUpdateTimeInterval));
+            Widgets.Label(rectTimeInterval,
+                string.Format("IT_AutoUpdateTimeInterval".Translate() + ": {0}", AutoUpdateTimeInterval));
             var floatRect = new Rect(rectTimeInterval.x + optionsX, rectTimeInterval.y + 10, 128, _optionsHeight);
             AutoUpdateTimeInterval = Widgets.HorizontalSlider(floatRect, AutoUpdateTimeInterval, 0, 5);
-            
-            if (Widgets.ButtonInvisible(inRect) == true) {
+
+            if (Widgets.ButtonInvisible(inRect))
+            {
                 _window.Dirty();
             }
         }
-
     }
 }

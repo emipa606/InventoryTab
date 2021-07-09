@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using UnityEngine;
-using RimWorld;
-using Verse;
-using InventoryTab.Helpers;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using InventoryTab.Helpers;
+using RimWorld;
+using RimWorld.Planet;
+using UnityEngine;
+using Verse;
 
 namespace InventoryTab
 {
     public class MainTabWindow_Inventory : MainTabWindow
     {
-
         //This is used for convenience sake
         public enum Tabs
         {
@@ -26,39 +26,43 @@ namespace InventoryTab
             Chunks,
             Corpses
         }
-        //Sets the size of the window
-        public override Vector2 RequestedTabSize => new Vector2(600f, 750f);
 
         //Used to define the height of the slot for the items
         private const float _slotHeight = 32;
-        //Hold the position of the scroll
-        private Vector2 _scrollPosition;
-        //What tab is currently being viewed
-        private Tabs _currentTab = Tabs.All;
-
-        //Used for searching items
-        private string _searchFor;
 
         //Chached list of all the corpses found
         private readonly List<Corpse> _corpses = new List<Corpse>();
 
-        private List<Thing> _things;
-        private List<Slot> _slots;
-        private List<Slot> _total;
-        private List<Slot> _found;
-        private Dictionary<string, int> _qualityCount;
-
-        private float _timer;
-
-        private bool _dirty = false;
-
         //A holder for all the options
         private readonly OptionsHelper _options;
+
+        //What tab is currently being viewed
+        private Tabs _currentTab = Tabs.All;
+
+        private bool _dirty;
+        private List<Slot> _found;
+
+        private Dictionary<string, int> _qualityCount;
+
+        //Hold the position of the scroll
+        private Vector2 _scrollPosition;
+
+        //Used for searching items
+        private string _searchFor;
+        private List<Slot> _slots;
+
+        private List<Thing> _things;
+
+        private float _timer;
+        private List<Slot> _total;
 
         public MainTabWindow_Inventory()
         {
             _options = new OptionsHelper(this);
         }
+
+        //Sets the size of the window
+        public override Vector2 RequestedTabSize => new Vector2(600f, 750f);
 
         public override void PostOpen()
         {
@@ -69,32 +73,32 @@ namespace InventoryTab
 
             //Set it so it's in the map view, no point seeing the items you have in world view
             //plus the selector might not work right in planet view(untested)
-            Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
+            Find.World.renderer.wantedMode = WorldRenderMode.None;
 
             UpdateThings();
         }
 
         public override void DoWindowContents(Rect inRect)
         {
-            base.DoWindowContents(inRect);
+            //base.DoWindowContents(inRect);
             _timer -= Time.deltaTime;
 
             //Cache the font and anchor before changing it, so 
             //later we can set it back to what it was before.
-            GameFont fontBefore = Text.Font;
-            TextAnchor anchorBefore = Text.Anchor;
+            var fontBefore = Text.Font;
+            var anchorBefore = Text.Anchor;
 
             //Clear the cached corpses
             _corpses.Clear();
 
-            if (_options.AutoUpdate == true && _timer < 0)
+            if (_options.AutoUpdate && _timer < 0)
             {
                 //Cache all items based on options
                 _dirty = true;
                 _timer = _options.AutoUpdateTimeInterval;
             }
 
-            if (_dirty == true)
+            if (_dirty)
             {
                 UpdateThings();
             }
@@ -114,6 +118,7 @@ namespace InventoryTab
             {
                 UpdateQualityDictionary(_total);
             }
+
             //Draw the header; options, search and how many items were found
             DrawHeader(inRect, _total.Count, _found.Count);
             //Draws the tabs
@@ -128,7 +133,7 @@ namespace InventoryTab
 
         public override void PostClose()
         {
-            if (Find.WindowStack.IsOpen<Dialog_Options>() == true)
+            if (Find.WindowStack.IsOpen<Dialog_Options>())
             {
                 Find.WindowStack.TryRemove(typeof(Dialog_Options));
             }
@@ -153,6 +158,7 @@ namespace InventoryTab
                 {
                     continue;
                 }
+
                 if (_qualityCount.ContainsKey(quality.GetLabel()))
                 {
                     _qualityCount[quality.GetLabel()]++;
@@ -186,6 +192,7 @@ namespace InventoryTab
             {
                 Widgets.Label(label, $"{"IT_TotalFound".Translate()}: {itemCount}");
             }
+
             if (_qualityCount.Count > 0)
             {
                 var qualityLabel = new Rect(0, 30, 466, 30);
@@ -196,20 +203,24 @@ namespace InventoryTab
                     {
                         continue;
                     }
+
                     if (!string.IsNullOrEmpty(qualityString))
                     {
                         qualityString += " ";
                     }
-                    qualityString += $"{GenText.CapitalizeFirst(qualityType.GetLabelShort())}: {_qualityCount[qualityType.GetLabel()]}";
+
+                    qualityString +=
+                        $"{qualityType.GetLabelShort().CapitalizeFirst()}: {_qualityCount[qualityType.GetLabel()]}";
                 }
+
                 Widgets.Label(qualityLabel, qualityString);
             }
 
             var optionsRect = new Rect(inRect.width - 25, 0, 25, 25);
             TooltipHandler.TipRegion(optionsRect, new TipSignal("IT_Options".Translate()));
-            if (Widgets.ButtonImage(optionsRect, ContentFinder<Texture2D>.Get("UI/settings", true)) == true)
+            if (Widgets.ButtonImage(optionsRect, ContentFinder<Texture2D>.Get("UI/settings")))
             {
-                if (Find.WindowStack.IsOpen<Dialog_Options>() == true)
+                if (Find.WindowStack.IsOpen<Dialog_Options>())
                 {
                     Find.WindowStack.TryRemove(typeof(Dialog_Options));
                 }
@@ -221,11 +232,10 @@ namespace InventoryTab
 
             var searchRect = new Rect(optionsRect.x - 35, 0, 25, 25);
             TooltipHandler.TipRegion(searchRect, new TipSignal("IT_Search".Translate()));
-            if (Widgets.ButtonImage(searchRect, ContentFinder<Texture2D>.Get("UI/search", true)) == true)
+            if (Widgets.ButtonImage(searchRect, ContentFinder<Texture2D>.Get("UI/search")))
             {
                 _dirty = true;
             }
-
         }
 
         private void DrawTabs(Rect rect)
@@ -237,18 +247,28 @@ namespace InventoryTab
             var tabs = new List<TabRecord>();
 
             //Creating all the tabs, we have to reCreate all these at runtime because they don't update
-            var tabRec_All = new TabRecord("IT_TabAll".Translate(), delegate () { TabClick(Tabs.All); }, _currentTab == Tabs.All);
+            var tabRec_All = new TabRecord("IT_TabAll".Translate(), delegate { TabClick(Tabs.All); },
+                _currentTab == Tabs.All);
 
-            var tabRec_Foods = new TabRecord("IT_TabFoods".Translate(), delegate () { TabClick(Tabs.Foods); }, _currentTab == Tabs.Foods);
-            var tabRec_Manufactured = new TabRecord("IT_TabManufactured".Translate(), delegate () { TabClick(Tabs.Manufactured); }, _currentTab == Tabs.Manufactured);
-            var tabRec_RawResources = new TabRecord("IT_TabRawResources".Translate(), delegate () { TabClick(Tabs.RawResources); }, _currentTab == Tabs.RawResources);
-            var tabRec_Items = new TabRecord("IT_TabItems".Translate(), delegate () { TabClick(Tabs.Items); }, _currentTab == Tabs.Items);
+            var tabRec_Foods = new TabRecord("IT_TabFoods".Translate(), delegate { TabClick(Tabs.Foods); },
+                _currentTab == Tabs.Foods);
+            var tabRec_Manufactured = new TabRecord("IT_TabManufactured".Translate(),
+                delegate { TabClick(Tabs.Manufactured); }, _currentTab == Tabs.Manufactured);
+            var tabRec_RawResources = new TabRecord("IT_TabRawResources".Translate(),
+                delegate { TabClick(Tabs.RawResources); }, _currentTab == Tabs.RawResources);
+            var tabRec_Items = new TabRecord("IT_TabItems".Translate(), delegate { TabClick(Tabs.Items); },
+                _currentTab == Tabs.Items);
 
-            var tabRec_Weapon = new TabRecord("IT_TabWeapons".Translate(), delegate () { TabClick(Tabs.Weapons); }, _currentTab == Tabs.Weapons);
-            var tabRec_Apperal = new TabRecord("IT_TabApparel".Translate(), delegate () { TabClick(Tabs.Apperal); }, _currentTab == Tabs.Apperal);
-            var tabRec_Buildings = new TabRecord("IT_TabBuildings".Translate(), delegate () { TabClick(Tabs.Building); }, _currentTab == Tabs.Building);
-            var tabRec_Chunks = new TabRecord("IT_TabChunks".Translate(), delegate () { TabClick(Tabs.Chunks); }, _currentTab == Tabs.Chunks);
-            var tabRec_Corpses = new TabRecord("IT_TabCorpses".Translate(), delegate () { TabClick(Tabs.Corpses); }, _currentTab == Tabs.Corpses);
+            var tabRec_Weapon = new TabRecord("IT_TabWeapons".Translate(), delegate { TabClick(Tabs.Weapons); },
+                _currentTab == Tabs.Weapons);
+            var tabRec_Apperal = new TabRecord("IT_TabApparel".Translate(), delegate { TabClick(Tabs.Apperal); },
+                _currentTab == Tabs.Apperal);
+            var tabRec_Buildings = new TabRecord("IT_TabBuildings".Translate(), delegate { TabClick(Tabs.Building); },
+                _currentTab == Tabs.Building);
+            var tabRec_Chunks = new TabRecord("IT_TabChunks".Translate(), delegate { TabClick(Tabs.Chunks); },
+                _currentTab == Tabs.Chunks);
+            var tabRec_Corpses = new TabRecord("IT_TabCorpses".Translate(), delegate { TabClick(Tabs.Corpses); },
+                _currentTab == Tabs.Corpses);
 
             //Add them to the list
             tabs.Add(tabRec_All);
@@ -271,12 +291,13 @@ namespace InventoryTab
         {
             var mainRect = new Rect(inRect.x, inRect.y + 37f + (_slotHeight * 3), inRect.width, inRect.height - 37f);
             //Creats slots for all the items; combines, sorts into catergorys and checks for searches all in one line 
-            List<Slot> categorizedSlots = GetSearchForList(slots);
+            var categorizedSlots = GetSearchForList(slots);
             //Sort based on market value
             categorizedSlots.Sort();
 
             //This is for the scrolling
-            var viewRect = new Rect(0, 0, mainRect.width - 16f, (categorizedSlots.Count * _slotHeight) + 6f + (_slotHeight * 3));
+            var viewRect = new Rect(0, 0, mainRect.width - 16f,
+                (categorizedSlots.Count * _slotHeight) + 6f + (_slotHeight * 3));
             Widgets.BeginScrollView(mainRect, ref _scrollPosition, viewRect);
             {
                 for (var i = 0; i < categorizedSlots.Count; i++)
@@ -300,7 +321,7 @@ namespace InventoryTab
 
         private void DrawThingSlot(Slot slot, Rect slotRect)
         {
-            Thing thing = slot.ThingInSlot;
+            var thing = slot.ThingInSlot;
 
             //Draw the image of the thing
             var imageRect = new Rect(0f, slotRect.y, 32f, 32f);
@@ -317,12 +338,12 @@ namespace InventoryTab
             //Set the label for the thing, we use custom stacksize so we have to set it here
             var thingLabel = thing.LabelCapNoCount + " (x" + slot.stackSize + ")";
             //If item is a humanlike corpse we want to display their name
-            if (slot.Tab == Tabs.Corpses && (thing as Corpse) != null && (thing as Corpse).InnerPawn.def.race.Humanlike == true)
+            if (slot.Tab == Tabs.Corpses && thing is Corpse corpse && corpse.InnerPawn.def.race.Humanlike)
             {
-                thingLabel = thing.Label;
+                thingLabel = corpse.Label;
             }
 
-            if (Widgets.ButtonInvisible(labelRect) == true)
+            if (Widgets.ButtonInvisible(labelRect))
             {
                 //Handles clicking of the slot, this was a bitch to get working correctly
                 HandleClick(slot.groupedThings);
@@ -341,22 +362,21 @@ namespace InventoryTab
         //Disclaimer i hate how i had to handle the corpses in this method
         private void HandleClick(List<Thing> things)
         {
-
             Find.Selector.ClearSelection();
             //Set this so when we are looping we only jump to one thing
             CameraJumperHelper.alreadyJumpedThisLoop = false;
 
-            for (var i = 0; i < things.Count; i++)
+            foreach (var thing in things)
             {
                 Corpse corpse;
                 Pawn pawn;
                 //Checks the thing to find out if its in a pawn inventory
-                if ((things[i].ParentHolder as Pawn_EquipmentTracker) != null)
+                if (thing.ParentHolder is Pawn_EquipmentTracker tracker)
                 {
-                    pawn = (things[i].ParentHolder as Pawn_EquipmentTracker).pawn;
+                    pawn = tracker.pawn;
                     //we need to check if the pawn is dead beacuase we can't selected a dead pawn
                     //we need to select it's corpse otherwise just select the pawn
-                    if (CheckForCorpse(pawn, out corpse) == true)
+                    if (CheckForCorpse(pawn, out corpse))
                     {
                         Find.Selector.Select(corpse);
                     }
@@ -365,10 +385,10 @@ namespace InventoryTab
                         Find.Selector.Select(pawn);
                     }
                 }
-                else if ((things[i].ParentHolder as Pawn_ApparelTracker) != null)
+                else if (thing.ParentHolder is Pawn_ApparelTracker apparelTracker)
                 {
-                    pawn = (things[i].ParentHolder as Pawn_ApparelTracker).pawn;
-                    if (CheckForCorpse(pawn, out corpse) == true)
+                    pawn = apparelTracker.pawn;
+                    if (CheckForCorpse(pawn, out corpse))
                     {
                         Find.Selector.Select(corpse);
                     }
@@ -377,10 +397,10 @@ namespace InventoryTab
                         Find.Selector.Select(pawn);
                     }
                 }
-                else if ((things[i].ParentHolder as Pawn_InventoryTracker) != null)
+                else if (thing.ParentHolder is Pawn_InventoryTracker inventoryTracker)
                 {
-                    pawn = (things[i].ParentHolder as Pawn_InventoryTracker).pawn;
-                    if (CheckForCorpse(pawn, out corpse) == true)
+                    pawn = inventoryTracker.pawn;
+                    if (CheckForCorpse(pawn, out corpse))
                     {
                         Find.Selector.Select(corpse);
                     }
@@ -392,7 +412,7 @@ namespace InventoryTab
                 else
                 {
                     //And if it's not attach to a pawn or a pawn's corpse it's most likly just a thing
-                    Find.Selector.Select(things[i]);
+                    Find.Selector.Select(thing);
                 }
 
                 //Try to jump to the thing
@@ -411,14 +431,17 @@ namespace InventoryTab
                 return false;
             }
 
-            for (var i = 0; i < _corpses.Count; i++)
+            foreach (var corpse1 in _corpses)
             {
-                if (pawn == _corpses[i].InnerPawn)
+                if (pawn != corpse1.InnerPawn)
                 {
-                    corpse = _corpses[i];
-                    return true;
+                    continue;
                 }
+
+                corpse = corpse1;
+                return true;
             }
+
             corpse = null;
             return false;
         }
@@ -430,6 +453,7 @@ namespace InventoryTab
             {
                 result.Add(new Slot(thing, AssignTab(thing)));
             }
+
             return result;
         }
 
@@ -438,29 +462,28 @@ namespace InventoryTab
         {
             var slotMap = new Dictionary<string, Slot>();
 
-            for (var i = 0; i < things.Length; i++)
+            foreach (var thing in things)
             {
-                var tId = things[i].LabelNoCount;
+                var tId = thing.LabelNoCount;
 
                 //If a thing is a corpse then we need to added it to the _corpse
                 //so later we can check it against pawn
-                if (things[i].def.IsWithinCategory(ThingCategoryDefOf.Corpses))
+                if (thing.def.IsWithinCategory(ThingCategoryDefOf.Corpses))
                 {
                     //Had to do a check to make sure the corpse is actually a corpse,
                     //Beacause mods like "Thanks for all the Fish" have things that are 
                     //catergorized as corpses but arent actually corpsese...
-                    if (things[i] is Corpse cor && cor.InnerPawn.def.race.Humanlike == true)
+                    if (thing is Corpse cor && cor.InnerPawn.def.race.Humanlike)
                     {
-
-                        _corpses.Add(things[i] as Corpse);
+                        _corpses.Add(cor);
                     }
                 }
 
                 //If a slot already exists for the thing then add it to it
-                if (slotMap.ContainsKey(tId) == true)
+                if (slotMap.ContainsKey(tId))
                 {
-                    slotMap[tId].groupedThings.Add(things[i]);
-                    slotMap[tId].stackSize += things[i].stackCount;
+                    slotMap[tId].groupedThings.Add(thing);
+                    slotMap[tId].stackSize += thing.stackCount;
 
                     continue;
                 }
@@ -472,13 +495,13 @@ namespace InventoryTab
                 }
 
                 //Create a new slot
-                var s = new Slot(things[i], AssignTab(things[i]));
+                var s = new Slot(thing, AssignTab(thing));
                 slotMap.Add(tId, s);
             }
 
             //Create and fill the return value
             var result = new List<Slot>();
-            foreach (Slot s in slotMap.Values)
+            foreach (var s in slotMap.Values)
             {
                 result.Add(s);
             }
@@ -496,11 +519,11 @@ namespace InventoryTab
 
             var result = new List<Slot>();
 
-            for (var i = 0; i < slots.Count; i++)
+            foreach (var slot in slots)
             {
-                if (slots[i].Tab == tab)
+                if (slot.Tab == tab)
                 {
-                    result.Add(slots[i]);
+                    result.Add(slot);
                 }
             }
 
@@ -510,7 +533,6 @@ namespace InventoryTab
         //Get a list of slots based on the _searchOf string
         private List<Slot> GetSearchForList(List<Slot> slots)
         {
-
             if (string.IsNullOrEmpty(_searchFor))
             {
                 return slots;
@@ -519,29 +541,32 @@ namespace InventoryTab
             var res = new List<Slot>();
 
             var escapedSearchText = _searchFor;
-            if(escapedSearchText.Trim().Contains(" "))
+            if (escapedSearchText.Trim().Contains(" "))
             {
                 escapedSearchText = escapedSearchText.Trim();
             }
+
             escapedSearchText = Regex.Escape(escapedSearchText);
-            if(escapedSearchText.Contains(@"\ "))
+            if (escapedSearchText.Contains(@"\ "))
             {
-                escapedSearchText = escapedSearchText.Replace(escapedSearchText.Trim(), escapedSearchText.Trim().Replace(@"\ ", ".*"));
+                escapedSearchText = escapedSearchText.Replace(escapedSearchText.Trim(),
+                    escapedSearchText.Trim().Replace(@"\ ", ".*"));
             }
-            for (var i = 0; i < slots.Count; i++)
+
+            foreach (var slot in slots)
             {
-                var searchText = slots[i].ThingInSlot.Label + " " + slots[i].ThingInSlot.LabelNoCount;
+                var searchText = slot.ThingInSlot.Label + " " + slot.ThingInSlot.LabelNoCount;
                 if (Regex.IsMatch(searchText, escapedSearchText, RegexOptions.IgnoreCase))
                 {
-                    res.Add(slots[i]);
+                    res.Add(slot);
                 }
             }
+
             return res;
         }
 
         private Tabs AssignTab(Thing thing)
         {
-
             //For some reason a thing that's been minifide dosen't have a thing categories
             //but as far as i know it;s the only thing that dosen't so just add it to the builing tab
             if (thing.def.thingCategories == null)
@@ -550,10 +575,9 @@ namespace InventoryTab
                 return Tabs.Building;
             }
 
-            List<ThingCategoryDef> catDefs = thing.def.thingCategories;
+            var catDefs = thing.def.thingCategories;
             for (var i = 0; i < catDefs.Count; i++)
             {
-
                 if (thing.def.IsWithinCategory(ThingCategoryDefOf.Foods))
                 {
                     return Tabs.Foods;
@@ -598,12 +622,9 @@ namespace InventoryTab
                 {
                     return Tabs.Corpses;
                 }
-
             }
 
             return Tabs.All;
         }
-
-
     }
 }
